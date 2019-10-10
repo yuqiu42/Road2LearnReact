@@ -1,0 +1,24 @@
+{
+  "name": "Road2LearnReact",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "react": "^16.10.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuqiu42/Road2LearnReact.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yuqiu42/Road2LearnReact/issues"
+  },
+  "homepage": "https://github.com/yuqiu42/Road2LearnReact#readme"
+}
