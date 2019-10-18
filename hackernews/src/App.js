@@ -22,6 +22,12 @@ class App extends Component {
     this.state = {
       pages
     };
+    this.onDismiss = this.onDismiss.bind(this);
+  }
+
+  onDismiss(id) {
+    const updatedPages = this.state.pages.filter(page => (page.objectID !== id));
+    this.setState({pages: updatedPages});
   }
 
   render() {
@@ -35,6 +41,14 @@ class App extends Component {
             <span>{page.author}</span>
             <span>{page.num_comments}</span>
             <span>{page.points}</span>
+            <span>
+              <button
+                onClick={() => this.onDismiss(page.objectID)}
+                type="button"
+              >
+                Dismiss
+              </button>
+            </span>
           </div>))}
       </div>
     );
