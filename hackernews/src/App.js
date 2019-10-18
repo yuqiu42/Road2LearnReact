@@ -1,5 +1,4 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
 const pages = [
@@ -17,21 +16,29 @@ const pages = [
   },
 ];
 
-function App() {
-  const helloWorld = "Welcome to the Road to learn React";
-  return (
-    <div className="App">
-      {pages.map((page) => (
-        <div key={page.objectID}>
-          <span>
-            <a href={page.url}>{page.title}</a>
-          </span>
-          <span>{page.author}</span>
-          <span>{page.num_comments}</span>
-          <span>{page.points}</span>
-        </div>))}
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pages
+    };
+  }
+
+  render() {
+    return (
+      <div className="App">
+        {this.state.pages.map((page) => (
+          <div key={page.objectID}>
+            <span>
+              <a href={page.url}>{page.title}</a>
+            </span>
+            <span>{page.author}</span>
+            <span>{page.num_comments}</span>
+            <span>{page.points}</span>
+          </div>))}
+      </div>
+    );
+  }
 }
 
 export default App;
