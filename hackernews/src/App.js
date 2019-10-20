@@ -16,13 +16,18 @@ const pages = [
   },
 ];
 
+const isSearched = (searchTerm) =>
+  (page) => page.title.toLowerCase().includes(searchTerm.toLowerCase())
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pages
+      pages,
+      searchTerm: "",
     };
     this.onDismiss = this.onDismiss.bind(this);
+    this.onSearchChange = this.onSearchChange.bind(this);
   }
 
   onDismiss(id) {
@@ -30,10 +35,20 @@ class App extends Component {
     this.setState({pages: updatedPages});
   }
 
+  onSearchChange(event) {
+    this.setState({searchTerm: event.target.value});
+  }
+
   render() {
     return (
       <div className="App">
-        {this.state.pages.map((page) => (
+        <form>
+          <input
+            type="text"
+            onChange={this.onSearchChange}
+          />
+        </form>
+        {this.state.pages.filter(isSearched(this.state.searchTerm)).map((page) => (
           <div key={page.objectID}>
             <span>
               <a href={page.url}>{page.title}</a>
