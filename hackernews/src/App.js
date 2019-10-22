@@ -19,6 +19,38 @@ const pages = [
 const isSearched = (searchTerm) =>
   (page) => page.title.toLowerCase().includes(searchTerm.toLowerCase())
 
+const Search = (props) => (
+  <form>
+    <input
+      type="text"
+      value={props.value}
+      onChange={props.onChange}
+    />
+  </form>
+);
+
+const Table = (props) => (
+  <div>
+    {props.pages.filter(isSearched(props.pattern)).map((page) => (
+      <div key={page.objectID}>
+        <span>
+          <a href={page.url}>{page.title}</a>
+        </span>
+        <span>{page.author}</span>
+        <span>{page.num_comments}</span>
+        <span>{page.points}</span>
+        <span>
+          <button
+            onClick={() => props.onDismiss(page.objectID)}
+            type="button"
+          >
+            Dismiss
+          </button>
+        </span>
+      </div>))}
+  </div>
+);
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -43,30 +75,15 @@ class App extends Component {
     const { searchTerm, pages } = this.state;
     return (
       <div className="App">
-        <form>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={this.onSearchChange}
-          />
-        </form>
-        {pages.filter(isSearched(searchTerm)).map((page) => (
-          <div key={page.objectID}>
-            <span>
-              <a href={page.url}>{page.title}</a>
-            </span>
-            <span>{page.author}</span>
-            <span>{page.num_comments}</span>
-            <span>{page.points}</span>
-            <span>
-              <button
-                onClick={() => this.onDismiss(page.objectID)}
-                type="button"
-              >
-                Dismiss
-              </button>
-            </span>
-          </div>))}
+        <Search
+          value={searchTerm}
+          onChange={this.onSearchChange}
+        />
+        <Table
+          pages={pages}
+          pattern={searchTerm}
+          onDismiss={this.onDismiss}
+        />
       </div>
     );
   }
