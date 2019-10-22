@@ -40,6 +40,7 @@ class App extends Component {
   }
 
   render() {
+    const { searchTerm, pages } = this.state;
     return (
       <div className="App">
         <form>
@@ -48,7 +49,7 @@ class App extends Component {
             onChange={this.onSearchChange}
           />
         </form>
-        {this.state.pages.filter(isSearched(this.state.searchTerm)).map((page) => (
+        {pages.filter(isSearched(searchTerm)).map((page) => (
           <div key={page.objectID}>
             <span>
               <a href={page.url}>{page.title}</a>
