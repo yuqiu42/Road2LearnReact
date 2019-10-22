@@ -19,20 +19,20 @@ const pages = [
 const isSearched = (searchTerm) =>
   (page) => page.title.toLowerCase().includes(searchTerm.toLowerCase())
 
-const Search = (props) => (
+const Search = ({ value, onChange, children }) => (
   <form>
-    {props.children}
+    {children}
     <input
       type="text"
-      value={props.value}
-      onChange={props.onChange}
+      value={value}
+      onChange={onChange}
     />
   </form>
 );
 
-const Table = (props) => (
+const Table = ({ pages, pattern, onDismiss }) => (
   <div>
-    {props.pages.filter(isSearched(props.pattern)).map((page) => (
+    {pages.filter(isSearched(pattern)).map((page) => (
       <div key={page.objectID}>
         <span>
           <a href={page.url}>{page.title}</a>
@@ -41,7 +41,7 @@ const Table = (props) => (
         <span>{page.num_comments}</span>
         <span>{page.points}</span>
         <span>
-          <Button onClick={() => props.onDismiss(page.objectID)}>
+          <Button onClick={() => onDismiss(page.objectID)}>
             Dismiss
           </Button>
         </span>
@@ -49,13 +49,13 @@ const Table = (props) => (
   </div>
 );
 
-const Button = (props) => (
+const Button = ({ onClick, className, children }) => (
   <button
-    onClick={props.onClick}
-    className={props.className}
+    onClick={onClick}
+    className={className}
     type="button"
   >
-    {props.children}
+    {children}
   </button>
 );
 
