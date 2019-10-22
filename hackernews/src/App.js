@@ -41,15 +41,22 @@ const Table = (props) => (
         <span>{page.num_comments}</span>
         <span>{page.points}</span>
         <span>
-          <button
-            onClick={() => props.onDismiss(page.objectID)}
-            type="button"
-          >
+          <Button onClick={() => props.onDismiss(page.objectID)}>
             Dismiss
-          </button>
+          </Button>
         </span>
       </div>))}
   </div>
+);
+
+const Button = (props) => (
+  <button
+    onClick={props.onClick}
+    className={props.className}
+    type="button"
+  >
+    {props.children}
+  </button>
 );
 
 class App extends Component {
