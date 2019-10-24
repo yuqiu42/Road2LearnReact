@@ -10,21 +10,6 @@ const largeColumn = { width: '40%', };
 const midColumn = { width: '30%', };
 const smallColumn = { width: '10%', };
 
-const pages = [
-  {
-    title: 'React',
-    url: 'https://reactjs.org/', author: 'Jordan Walke', num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: 'Redux',
-    url: 'https://redux.js.org/', author: 'Dan Abramov, Andrew Clark', num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
-
 const isSearched = (searchTerm) =>
   (page) => page.title.toLowerCase().includes(searchTerm.toLowerCase())
 
@@ -82,24 +67,34 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pages,
-      searchTerm: "",
+      result: null,
+      searchTerm: DEFAULT_QUERY,
     };
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
   }
 
   onDismiss(id) {
-    const updatedPages = this.state.pages.filter(page => (page.objectID !== id));
-    this.setState({pages: updatedPages});
+    const updatedHits = this.state.result.hits.filter(page => (page.objectID !== id));
+    this.setState({result: { hits: updatedHits }});
   }
 
   onSearchChange(event) {
     this.setState({searchTerm: event.target.value});
   }
 
+  componentDidMount() {
+    const { searchTerm } = this.state;
+    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+      .then(response => response.json())
+      .then(result => this.setState({ result }))
+      .catch(error => error);
+  }
+
   render() {
-    const { searchTerm, pages } = this.state;
+    const { searchTerm, result } = this.state;
+    if (!result) { return null; }
+
     return (
       <div className="page">
         <div className="interactions">
@@ -111,7 +106,7 @@ class App extends Component {
           </Search>
         </div>
         <Table
-          pages={pages}
+          pages={result.hits}
           pattern={searchTerm}
           onDismiss={this.onDismiss}
         />
