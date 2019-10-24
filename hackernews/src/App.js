@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 
+const largeColumn = { width: '40%', };
+const midColumn = { width: '30%', };
+const smallColumn = { width: '10%', };
+
 const pages = [
   {
     title: 'React',
@@ -31,21 +35,31 @@ const Search = ({ value, onChange, children }) => (
 );
 
 const Table = ({ pages, pattern, onDismiss }) => (
-  <div>
+  <div className="table">
     {pages.filter(isSearched(pattern)).map((page) => (
-      <div key={page.objectID}>
-        <span>
+      <div key={page.objectID} className="table-row">
+        <span style={largeColumn}>
           <a href={page.url}>{page.title}</a>
         </span>
-        <span>{page.author}</span>
-        <span>{page.num_comments}</span>
-        <span>{page.points}</span>
-        <span>
-          <Button onClick={() => onDismiss(page.objectID)}>
+        <span style={midColumn}>
+          {page.author}
+        </span>
+        <span style={smallColumn}>
+          {page.num_comments}
+        </span>
+        <span style={smallColumn}>
+          {page.points}
+        </span>
+        <span style={smallColumn}>
+          <Button
+            onClick={() => onDismiss(page.objectID)}
+            className="button-inline"
+          >
             Dismiss
           </Button>
         </span>
-      </div>))}
+      </div>)
+    )}
   </div>
 );
 
@@ -82,13 +96,15 @@ class App extends Component {
   render() {
     const { searchTerm, pages } = this.state;
     return (
-      <div className="App">
-        <Search
-          value={searchTerm}
-          onChange={this.onSearchChange}
-        >
-          Search:
-        </Search>
+      <div className="page">
+        <div className="interactions">
+          <Search
+            value={searchTerm}
+            onChange={this.onSearchChange}
+          >
+            Search:
+          </Search>
+        </div>
         <Table
           pages={pages}
           pattern={searchTerm}
