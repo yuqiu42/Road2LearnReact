@@ -88,6 +88,7 @@ class App extends Component {
 
   onSearchSubmit(event) {
     this.fetchSearchTopStories(this.state.searchTerm);
+    event.preventDefault();
   }
 
   fetchSearchTopStories(searchTerm) {
