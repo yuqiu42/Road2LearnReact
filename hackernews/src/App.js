@@ -13,14 +13,16 @@ const smallColumn = { width: '10%', };
 const isSearched = (searchTerm) =>
   (page) => page.title.toLowerCase().includes(searchTerm.toLowerCase())
 
-const Search = ({ value, onChange, children }) => (
+const Search = ({ value, onChange, onSubmit, children }) => (
   <form>
-    {children}
     <input
       type="text"
       value={value}
       onChange={onChange}
     />
+    <button type="submit">
+      Search
+    </button>
   </form>
 );
 
@@ -72,6 +74,7 @@ class App extends Component {
     };
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
+    this.onSearchSubmit = this.onSearchSubmit.bind(this);
   }
 
   onDismiss(id) {
@@ -86,12 +89,19 @@ class App extends Component {
     this.setState({searchTerm: event.target.value});
   }
 
-  componentDidMount() {
-    const { searchTerm } = this.state;
+  onSearchSubmit(event) {
+    this.fetchSearchTopStories(this.state.searchTerm);
+  }
+
+  fetchSearchTopStories(searchTerm) {
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
       .then(response => response.json())
       .then(result => this.setState({ result }))
       .catch(error => error);
+  }
+
+  componentDidMount() {
+    this.fetchSearchTopStories(this.state.searchTerm);
   }
 
   render() {
@@ -102,9 +112,8 @@ class App extends Component {
           <Search
             value={searchTerm}
             onChange={this.onSearchChange}
-          >
-            Search:
-          </Search>
+            onSubmit={this.onSearchSubmit}
+          />
         </div>
         { result &&
           <Table
