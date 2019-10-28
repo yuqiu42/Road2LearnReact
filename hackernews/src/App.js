@@ -10,9 +10,6 @@ const largeColumn = { width: '40%', };
 const midColumn = { width: '30%', };
 const smallColumn = { width: '10%', };
 
-const isSearched = (searchTerm) =>
-  (page) => page.title.toLowerCase().includes(searchTerm.toLowerCase())
-
 const Search = ({ value, onChange, onSubmit, children }) => (
   <form>
     <input
@@ -26,9 +23,9 @@ const Search = ({ value, onChange, onSubmit, children }) => (
   </form>
 );
 
-const Table = ({ pages, pattern, onDismiss }) => (
+const Table = ({ pages, onDismiss }) => (
   <div className="table">
-    {pages.filter(isSearched(pattern)).map((page) => (
+    {pages.map((page) => (
       <div key={page.objectID} className="table-row">
         <span style={largeColumn}>
           <a href={page.url}>{page.title}</a>
@@ -118,7 +115,6 @@ class App extends Component {
         { result &&
           <Table
             pages={result.hits}
-            pattern={searchTerm}
             onDismiss={this.onDismiss}
           /> }
       </div>
