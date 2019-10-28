@@ -10,8 +10,8 @@ const largeColumn = { width: '40%', };
 const midColumn = { width: '30%', };
 const smallColumn = { width: '10%', };
 
-const Search = ({ value, onChange, onSubmit, children }) => (
-  <form>
+const Search = ({ value, onChange, onSubmit }) => (
+  <form onSubmit={onSubmit}>
     <input
       type="text"
       value={value}
