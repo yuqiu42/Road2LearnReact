@@ -69,7 +69,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      result: null,
+      results: null,
+      searchKey: "",
       searchTerm: DEFAULT_QUERY,
     };
     this.onDismiss = this.onDismiss.bind(this);
@@ -91,7 +92,9 @@ class App extends Component {
   }
 
   onSearchSubmit(event) {
-    this.fetchSearchTopStories(this.state.searchTerm);
+    const searchTerm = this.state.searchTerm;
+    this.setState({ searchKey: searchTerm });
+    this.fetchSearchTopStories(searchTerm);
     event.preventDefault();
   }
 
@@ -104,22 +107,39 @@ class App extends Component {
 
   setSearchTopStories(result) {
     const { hits, page } = result;
-    const oldHits = page !== 0
-      ? this.state.result.hits
+    const { searchKey, results } = this.state;
+    const oldHits = results && results[searchKey]
+      ? results[searchKey].hits
       : [];
     const updatedHits = [ ...oldHits, ...hits]
     this.setState({
-      result: { hits: updatedHits, page: page }
+      results: {
+        ...results,
+        [searchKey]: { hits: updatedHits, page }
+      }
     })
   }
 
   componentDidMount() {
-    this.fetchSearchTopStories(this.state.searchTerm);
+    const searchTerm = this.state.searchTerm;
+    this.setState({ searchKey: searchTerm });
+    this.fetchSearchTopStories(searchTerm);
   }
 
   render() {
-    const { searchTerm, result } = this.state;
-    const currentPage = (result && result.page) || 0
+    const { searchTerm, results, searchKey } = this.state;
+    const currentPage = (
+      results &&
+      results[searchKey] &&
+      results[searchKey].page
+    ) || 0;
+    console.log(currentPage);
+    
+    const pages = (
+      results &&
+      results[searchKey] &&
+      results[searchKey].hits
+    ) || [];
     return (
       <div className="page">
         <div className="interactions">
@@ -129,13 +149,12 @@ class App extends Component {
             onSubmit={this.onSearchSubmit}
           />
         </div>
-        { result &&
-          <Table
-            pages={result.hits}
-            onDismiss={this.onDismiss}
-          /> }
+        <Table
+          pages={pages}
+          onDismiss={this.onDismiss}
+        />
         <div className="interactions">
-          <Button onClick={() => this.fetchSearchTopStories(searchTerm, currentPage + 1)}>
+          <Button onClick={() => this.fetchSearchTopStories(searchKey, currentPage + 1)}>
             More
           </Button>
         </div>
