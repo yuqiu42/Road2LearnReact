@@ -1,47 +1,35 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
 
-const DEFAULT_QUERY = 'redux';
-const DEFAULT_HITS_PER_PAGE = '100';
-const PATH_BASE = 'https://hn.algolia.com/api/v1';
-const PATH_SEARCH = '/search';
-const PARAM_SEARCH = 'query=';
+const DEFAULT_QUERY = "redux";
+const DEFAULT_HITS_PER_PAGE = "100";
+const PATH_BASE = "https://hn.algolia.com/api/v1";
+const PATH_SEARCH = "/search";
+const PARAM_SEARCH = "query=";
 const PARAM_PAGE = "page=";
-const PARAM_HPP = 'hitsPerPage=';
+const PARAM_HPP = "hitsPerPage=";
 
-const largeColumn = { width: '40%', };
-const midColumn = { width: '30%', };
-const smallColumn = { width: '10%', };
+const largeColumn = { width: "40%" };
+const midColumn = { width: "30%" };
+const smallColumn = { width: "10%" };
 
 const Search = ({ value, onChange, onSubmit }) => (
   <form onSubmit={onSubmit}>
-    <input
-      type="text"
-      value={value}
-      onChange={onChange}
-    />
-    <button type="submit">
-      Search
-    </button>
+    <input type="text" value={value} onChange={onChange} />
+    <button type="submit">Search</button>
   </form>
 );
 
 const Table = ({ pages, onDismiss }) => (
   <div className="table">
-    {pages.map((page) => (
+    {pages.map(page => (
       <div key={page.objectID} className="table-row">
         <span style={largeColumn}>
           <a href={page.url}>{page.title}</a>
         </span>
-        <span style={midColumn}>
-          {page.author}
-        </span>
-        <span style={smallColumn}>
-          {page.num_comments}
-        </span>
-        <span style={smallColumn}>
-          {page.points}
-        </span>
+        <span style={midColumn}>{page.author}</span>
+        <span style={smallColumn}>{page.num_comments}</span>
+        <span style={smallColumn}>{page.points}</span>
         <span style={smallColumn}>
           <Button
             onClick={() => onDismiss(page.objectID)}
@@ -50,17 +38,13 @@ const Table = ({ pages, onDismiss }) => (
             Dismiss
           </Button>
         </span>
-      </div>)
-    )}
+      </div>
+    ))}
   </div>
 );
 
 const Button = ({ onClick, className, children }) => (
-  <button
-    onClick={onClick}
-    className={className}
-    type="button"
-  >
+  <button onClick={onClick} className={className} type="button">
     {children}
   </button>
 );
@@ -71,7 +55,7 @@ class App extends Component {
     this.state = {
       results: null,
       searchKey: "",
-      searchTerm: DEFAULT_QUERY,
+      searchTerm: DEFAULT_QUERY
     };
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
@@ -80,7 +64,7 @@ class App extends Component {
   }
 
   onDismiss(id) {
-    const isNotId = (page) => (page.objectID !== id)
+    const isNotId = page => page.objectID !== id;
     const updatedHits = this.state.result.hits.filter(isNotId);
     this.setState({
       result: { ...this.state.result, hits: updatedHits }
@@ -88,7 +72,7 @@ class App extends Component {
   }
 
   onSearchChange(event) {
-    this.setState({searchTerm: event.target.value});
+    this.setState({ searchTerm: event.target.value });
   }
 
   onSearchSubmit(event) {
@@ -99,7 +83,9 @@ class App extends Component {
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
-    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HITS_PER_PAGE}`)
+    fetch(
+      `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HITS_PER_PAGE}`
+    )
       .then(response => response.json())
       .then(this.setSearchTopStories)
       .catch(error => error);
@@ -108,16 +94,15 @@ class App extends Component {
   setSearchTopStories(result) {
     const { hits, page } = result;
     const { searchKey, results } = this.state;
-    const oldHits = results && results[searchKey]
-      ? results[searchKey].hits
-      : [];
-    const updatedHits = [ ...oldHits, ...hits]
+    const oldHits =
+      results && results[searchKey] ? results[searchKey].hits : [];
+    const updatedHits = [...oldHits, ...hits];
     this.setState({
       results: {
         ...results,
         [searchKey]: { hits: updatedHits, page }
       }
-    })
+    });
   }
 
   componentDidMount() {
@@ -128,18 +113,12 @@ class App extends Component {
 
   render() {
     const { searchTerm, results, searchKey } = this.state;
-    const currentPage = (
-      results &&
-      results[searchKey] &&
-      results[searchKey].page
-    ) || 0;
+    const currentPage =
+      (results && results[searchKey] && results[searchKey].page) || 0;
     console.log(currentPage);
-    
-    const pages = (
-      results &&
-      results[searchKey] &&
-      results[searchKey].hits
-    ) || [];
+
+    const pages =
+      (results && results[searchKey] && results[searchKey].hits) || [];
     return (
       <div className="page">
         <div className="interactions">
@@ -149,12 +128,13 @@ class App extends Component {
             onSubmit={this.onSearchSubmit}
           />
         </div>
-        <Table
-          pages={pages}
-          onDismiss={this.onDismiss}
-        />
+        <Table pages={pages} onDismiss={this.onDismiss} />
         <div className="interactions">
-          <Button onClick={() => this.fetchSearchTopStories(searchKey, currentPage + 1)}>
+          <Button
+            onClick={() =>
+              this.fetchSearchTopStories(searchKey, currentPage + 1)
+            }
+          >
             More
           </Button>
         </div>
