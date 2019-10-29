@@ -61,6 +61,11 @@ class App extends Component {
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
+    this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
+  }
+
+  needsToSearchTopStories(searchKey) {
+    return !this.state.results[searchKey];
   }
 
   onDismiss(id) {
@@ -80,7 +85,9 @@ class App extends Component {
   onSearchSubmit(event) {
     const searchTerm = this.state.searchTerm;
     this.setState({ searchKey: searchTerm });
-    this.fetchSearchTopStories(searchTerm);
+    if (this.needsToSearchTopStories(searchTerm)) {
+      this.fetchSearchTopStories(searchTerm);
+    }
     event.preventDefault();
   }
 
@@ -117,8 +124,6 @@ class App extends Component {
     const { searchTerm, results, searchKey } = this.state;
     const currentPage =
       (results && results[searchKey] && results[searchKey].page) || 0;
-    console.log(currentPage);
-
     const pages =
       (results && results[searchKey] && results[searchKey].hits) || [];
     return (
