@@ -127,9 +127,6 @@ class App extends Component {
       (results && results[searchKey] && results[searchKey].page) || 0;
     const pages =
       (results && results[searchKey] && results[searchKey].hits) || [];
-    if (error) {
-      return <p>Something went wrong.</p>;
-    }
     return (
       <div className="page">
         <div className="interactions">
@@ -139,7 +136,11 @@ class App extends Component {
             onSubmit={this.onSearchSubmit}
           />
         </div>
-        <Table pages={pages} onDismiss={this.onDismiss} />
+        {error ? (
+          <p>Something went wrong.</p>
+        ) : (
+          <Table pages={pages} onDismiss={this.onDismiss} />
+        )}
         <div className="interactions">
           <Button
             onClick={() =>
