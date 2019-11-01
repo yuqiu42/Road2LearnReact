@@ -17,11 +17,22 @@ const midColumn = { width: "30%" };
 const smallColumn = { width: "10%" };
 
 class Search extends Component {
+  componentDidMount() {
+    if (this.input) {
+      this.input.focus();
+    }
+  }
+
   render() {
     const { value, onChange, onSubmit } = this.props;
     return (
       <form onSubmit={onSubmit}>
-        <input type="text" value={value} onChange={onChange} />
+        <input
+          type="text"
+          value={value}
+          onChange={onChange}
+          ref={element => (this.input = element)}
+        />
         <button type="submit">Search</button>
       </form>
     );
