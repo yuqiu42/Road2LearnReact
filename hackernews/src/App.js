@@ -16,12 +16,17 @@ const largeColumn = { width: "40%" };
 const midColumn = { width: "30%" };
 const smallColumn = { width: "10%" };
 
-const Search = ({ value, onChange, onSubmit }) => (
-  <form onSubmit={onSubmit}>
-    <input type="text" value={value} onChange={onChange} />
-    <button type="submit">Search</button>
-  </form>
-);
+class Search extends Component {
+  render() {
+    const { value, onChange, onSubmit } = this.props;
+    return (
+      <form onSubmit={onSubmit}>
+        <input type="text" value={value} onChange={onChange} />
+        <button type="submit">Search</button>
+      </form>
+    );
+  }
+}
 
 const Table = ({ pages, onDismiss }) => (
   <div className="table">
