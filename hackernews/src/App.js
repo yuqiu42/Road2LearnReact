@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { sortBy } from "lodash";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 
 import "./App.css";
 
@@ -43,12 +44,11 @@ class Search extends Component {
 }
 
 const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
-  const classNames = ["button-inline"];
-  if (sortKey === activeSortKey) {
-    classNames.push("button-active");
-  }
+  const className = classNames("button-inline", {
+    "button-active": sortKey === activeSortKey
+  });
   return (
-    <Button onClick={() => onSort(sortKey)} className={classNames.join(" ")}>
+    <Button onClick={() => onSort(sortKey)} className={className}>
       {children}
     </Button>
   );
