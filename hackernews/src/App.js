@@ -16,6 +16,8 @@ const largeColumn = { width: "40%" };
 const midColumn = { width: "30%" };
 const smallColumn = { width: "10%" };
 
+const Loading = () => <div>Loading ...</div>;
+
 class Search extends Component {
   componentDidMount() {
     if (this.input) {
@@ -97,7 +99,8 @@ class App extends Component {
       results: null,
       searchKey: "",
       searchTerm: DEFAULT_QUERY,
-      error: null
+      error: null,
+      isLoading: false
     };
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
@@ -134,6 +137,7 @@ class App extends Component {
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
+    this.setState({ isLoading: true });
     axios
       .get(
         `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HITS_PER_PAGE}`
@@ -152,7 +156,8 @@ class App extends Component {
       results: {
         ...results,
         [searchKey]: { hits: updatedHits, page }
-      }
+      },
+      isLoading: false
     });
   }
 
@@ -163,7 +168,7 @@ class App extends Component {
   }
 
   render() {
-    const { searchTerm, results, searchKey, error } = this.state;
+    const { searchTerm, results, searchKey, error, isLoading } = this.state;
     const currentPage =
       (results && results[searchKey] && results[searchKey].page) || 0;
     const pages =
@@ -183,13 +188,17 @@ class App extends Component {
           <Table pages={pages} onDismiss={this.onDismiss} />
         )}
         <div className="interactions">
-          <Button
-            onClick={() =>
-              this.fetchSearchTopStories(searchKey, currentPage + 1)
-            }
-          >
-            More
-          </Button>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <Button
+              onClick={() =>
+                this.fetchSearchTopStories(searchKey, currentPage + 1)
+              }
+            >
+              More
+            </Button>
+          )}
         </div>
       </div>
     );
