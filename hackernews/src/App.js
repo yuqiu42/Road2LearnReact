@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { sortBy } from "lodash";
 import PropTypes from "prop-types";
 
 import "./App.css";
@@ -41,29 +42,61 @@ class Search extends Component {
   }
 }
 
-const Table = ({ pages, onDismiss }) => (
-  <div className="table">
-    {pages.map(page => (
-      <div key={page.objectID} className="table-row">
-        <span style={largeColumn}>
-          <a href={page.url}>{page.title}</a>
-        </span>
-        <span style={midColumn}>{page.author}</span>
-        <span style={smallColumn}>{page.num_comments}</span>
-        <span style={smallColumn}>{page.points}</span>
-        <span style={smallColumn}>
-          <Button
-            onClick={() => onDismiss(page.objectID)}
-            className="button-inline"
-          >
-            Dismiss
-          </Button>
-        </span>
-      </div>
-    ))}
-  </div>
+const Sort = ({ sortKey, onSort, children }) => (
+  <Button onClick={() => onSort(sortKey)} className="button-inline">
+    {children}
+  </Button>
 );
 
+const Table = ({ pages, onDismiss, sortKey, isSortReverse, onSort }) => {
+  let sortedPages = SORTING_FUNCTIONS[sortKey](pages);
+  sortedPages = isSortReverse ? sortedPages.reverse() : sortedPages;
+  return (
+    <div className="table">
+      <div className="table-header">
+        <span style={largeColumn}>
+          <Sort sortKey={"TITLE"} onSort={onSort}>
+            Title
+          </Sort>
+        </span>
+        <span style={midColumn}>
+          <Sort sortKey={"AUTHOR"} onSort={onSort}>
+            Author
+          </Sort>
+        </span>
+        <span style={smallColumn}>
+          <Sort sortKey={"COMMENTS"} onSort={onSort}>
+            Comments
+          </Sort>
+        </span>
+        <span style={smallColumn}>
+          <Sort sortKey={"POINTS"} onSort={onSort}>
+            Points
+          </Sort>
+        </span>
+        <span style={smallColumn}> Archive</span>
+      </div>
+      {sortedPages.map(page => (
+        <div key={page.objectID} className="table-row">
+          <span style={largeColumn}>
+            <a href={page.url}>{page.title}</a>
+          </span>
+          <span style={midColumn}>{page.author}</span>
+          <span style={smallColumn}>{page.num_comments}</span>
+          <span style={smallColumn}>{page.points}</span>
+          <span style={smallColumn}>
+            <Button
+              onClick={() => onDismiss(page.objectID)}
+              className="button-inline"
+            >
+              Dismiss
+            </Button>
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
 Table.propTypes = {
   pages: PropTypes.arrayOf(
     PropTypes.shape({
@@ -97,6 +130,14 @@ const withLoading = Component => ({ isLoading, ...rest }) =>
 
 const ButtonWithLoading = withLoading(Button);
 
+const SORTING_FUNCTIONS = {
+  NONE: list => list,
+  TITLE: list => sortBy(list, "title"),
+  AUTHOR: list => sortBy(list, "author"),
+  COMMENTS: list => sortBy(list, "num_comments").reverse(),
+  POINTS: list => sortBy(list, "points").reverse()
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -105,13 +146,16 @@ class App extends Component {
       searchKey: "",
       searchTerm: DEFAULT_QUERY,
       error: null,
-      isLoading: false
+      isLoading: false,
+      sortKey: "NONE",
+      isSortReverse: false
     };
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
+    this.onSort = this.onSort.bind(this);
   }
 
   needsToSearchTopStories(searchKey) {
@@ -166,6 +210,12 @@ class App extends Component {
     });
   }
 
+  onSort(sortKey) {
+    const isSortReverse =
+      this.state.sortKey === sortKey && !this.state.isSortReverse;
+    this.setState({ sortKey, isSortReverse });
+  }
+
   componentDidMount() {
     const searchTerm = this.state.searchTerm;
     this.setState({ searchKey: searchTerm });
@@ -173,7 +223,15 @@ class App extends Component {
   }
 
   render() {
-    const { searchTerm, results, searchKey, error, isLoading } = this.state;
+    const {
+      searchTerm,
+      results,
+      searchKey,
+      error,
+      isLoading,
+      sortKey,
+      isSortReverse
+    } = this.state;
     const currentPage =
       (results && results[searchKey] && results[searchKey].page) || 0;
     const pages =
@@ -190,7 +248,13 @@ class App extends Component {
         {error ? (
           <p>Something went wrong.</p>
         ) : (
-          <Table pages={pages} onDismiss={this.onDismiss} />
+          <Table
+            pages={pages}
+            onDismiss={this.onDismiss}
+            sortKey={sortKey}
+            onSort={this.onSort}
+            isSortReverse={isSortReverse}
+          />
         )}
         <div className="interactions">
           <ButtonWithLoading
