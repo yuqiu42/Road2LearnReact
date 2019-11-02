@@ -42,11 +42,17 @@ class Search extends Component {
   }
 }
 
-const Sort = ({ sortKey, onSort, children }) => (
-  <Button onClick={() => onSort(sortKey)} className="button-inline">
-    {children}
-  </Button>
-);
+const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
+  const classNames = ["button-inline"];
+  if (sortKey === activeSortKey) {
+    classNames.push("button-active");
+  }
+  return (
+    <Button onClick={() => onSort(sortKey)} className={classNames.join(" ")}>
+      {children}
+    </Button>
+  );
+};
 
 const Table = ({ pages, onDismiss, sortKey, isSortReverse, onSort }) => {
   let sortedPages = SORTING_FUNCTIONS[sortKey](pages);
@@ -55,22 +61,22 @@ const Table = ({ pages, onDismiss, sortKey, isSortReverse, onSort }) => {
     <div className="table">
       <div className="table-header">
         <span style={largeColumn}>
-          <Sort sortKey={"TITLE"} onSort={onSort}>
+          <Sort sortKey={"TITLE"} onSort={onSort} activeSortKey={sortKey}>
             Title
           </Sort>
         </span>
         <span style={midColumn}>
-          <Sort sortKey={"AUTHOR"} onSort={onSort}>
+          <Sort sortKey={"AUTHOR"} onSort={onSort} activeSortKey={sortKey}>
             Author
           </Sort>
         </span>
         <span style={smallColumn}>
-          <Sort sortKey={"COMMENTS"} onSort={onSort}>
+          <Sort sortKey={"COMMENTS"} onSort={onSort} activeSortKey={sortKey}>
             Comments
           </Sort>
         </span>
         <span style={smallColumn}>
-          <Sort sortKey={"POINTS"} onSort={onSort}>
+          <Sort sortKey={"POINTS"} onSort={onSort} activeSortKey={sortKey}>
             Points
           </Sort>
         </span>
