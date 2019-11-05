@@ -238,13 +238,7 @@ class App extends Component {
   }
 
   render() {
-    const {
-      searchTerm,
-      results,
-      searchKey,
-      error,
-      isLoading,
-    } = this.state;
+    const { searchTerm, results, searchKey, error, isLoading } = this.state;
     const currentPage =
       (results && results[searchKey] && results[searchKey].page) || 0;
     const pages =
@@ -261,10 +255,7 @@ class App extends Component {
         {error ? (
           <p>Something went wrong.</p>
         ) : (
-          <Table
-            pages={pages}
-            onDismiss={this.onDismiss}
-          />
+          <Table pages={pages} onDismiss={this.onDismiss} />
         )}
         <div className="interactions">
           <ButtonWithLoading
