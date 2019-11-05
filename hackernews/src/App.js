@@ -55,6 +55,21 @@ const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
 };
 
 class Table extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sortKey: "NONE",
+      isSortReverse: false
+    };
+    this.onSort = this.onSort.bind(this);
+  }
+
+  onSort(sortKey) {
+    const isSortReverse =
+      this.state.sortKey === sortKey && !this.state.isSortReverse;
+    this.setState({ sortKey, isSortReverse });
+  }
+
   render() {
     const { pages, onDismiss, sortKey, isSortReverse, onSort } = this.props;
     let sortedPages = SORTING_FUNCTIONS[sortKey](pages);
@@ -155,16 +170,13 @@ class App extends Component {
       searchKey: "",
       searchTerm: DEFAULT_QUERY,
       error: null,
-      isLoading: false,
-      sortKey: "NONE",
-      isSortReverse: false
+      isLoading: false
     };
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
-    this.onSort = this.onSort.bind(this);
   }
 
   needsToSearchTopStories(searchKey) {
@@ -219,12 +231,6 @@ class App extends Component {
     });
   }
 
-  onSort(sortKey) {
-    const isSortReverse =
-      this.state.sortKey === sortKey && !this.state.isSortReverse;
-    this.setState({ sortKey, isSortReverse });
-  }
-
   componentDidMount() {
     const searchTerm = this.state.searchTerm;
     this.setState({ searchKey: searchTerm });
@@ -238,8 +244,6 @@ class App extends Component {
       searchKey,
       error,
       isLoading,
-      sortKey,
-      isSortReverse
     } = this.state;
     const currentPage =
       (results && results[searchKey] && results[searchKey].page) || 0;
@@ -260,9 +264,6 @@ class App extends Component {
           <Table
             pages={pages}
             onDismiss={this.onDismiss}
-            sortKey={sortKey}
-            onSort={this.onSort}
-            isSortReverse={isSortReverse}
           />
         )}
         <div className="interactions">
