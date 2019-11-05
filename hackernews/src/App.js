@@ -54,55 +54,58 @@ const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
   );
 };
 
-const Table = ({ pages, onDismiss, sortKey, isSortReverse, onSort }) => {
-  let sortedPages = SORTING_FUNCTIONS[sortKey](pages);
-  sortedPages = isSortReverse ? sortedPages.reverse() : sortedPages;
-  return (
-    <div className="table">
-      <div className="table-header">
-        <span style={largeColumn}>
-          <Sort sortKey={"TITLE"} onSort={onSort} activeSortKey={sortKey}>
-            Title
-          </Sort>
-        </span>
-        <span style={midColumn}>
-          <Sort sortKey={"AUTHOR"} onSort={onSort} activeSortKey={sortKey}>
-            Author
-          </Sort>
-        </span>
-        <span style={smallColumn}>
-          <Sort sortKey={"COMMENTS"} onSort={onSort} activeSortKey={sortKey}>
-            Comments
-          </Sort>
-        </span>
-        <span style={smallColumn}>
-          <Sort sortKey={"POINTS"} onSort={onSort} activeSortKey={sortKey}>
-            Points
-          </Sort>
-        </span>
-        <span style={smallColumn}> Archive</span>
-      </div>
-      {sortedPages.map(page => (
-        <div key={page.objectID} className="table-row">
+class Table extends Component {
+  render() {
+    const { pages, onDismiss, sortKey, isSortReverse, onSort } = this.props;
+    let sortedPages = SORTING_FUNCTIONS[sortKey](pages);
+    sortedPages = isSortReverse ? sortedPages.reverse() : sortedPages;
+    return (
+      <div className="table">
+        <div className="table-header">
           <span style={largeColumn}>
-            <a href={page.url}>{page.title}</a>
+            <Sort sortKey={"TITLE"} onSort={onSort} activeSortKey={sortKey}>
+              Title
+            </Sort>
           </span>
-          <span style={midColumn}>{page.author}</span>
-          <span style={smallColumn}>{page.num_comments}</span>
-          <span style={smallColumn}>{page.points}</span>
+          <span style={midColumn}>
+            <Sort sortKey={"AUTHOR"} onSort={onSort} activeSortKey={sortKey}>
+              Author
+            </Sort>
+          </span>
           <span style={smallColumn}>
-            <Button
-              onClick={() => onDismiss(page.objectID)}
-              className="button-inline"
-            >
-              Dismiss
-            </Button>
+            <Sort sortKey={"COMMENTS"} onSort={onSort} activeSortKey={sortKey}>
+              Comments
+            </Sort>
           </span>
+          <span style={smallColumn}>
+            <Sort sortKey={"POINTS"} onSort={onSort} activeSortKey={sortKey}>
+              Points
+            </Sort>
+          </span>
+          <span style={smallColumn}> Archive</span>
         </div>
-      ))}
-    </div>
-  );
-};
+        {sortedPages.map(page => (
+          <div key={page.objectID} className="table-row">
+            <span style={largeColumn}>
+              <a href={page.url}>{page.title}</a>
+            </span>
+            <span style={midColumn}>{page.author}</span>
+            <span style={smallColumn}>{page.num_comments}</span>
+            <span style={smallColumn}>{page.points}</span>
+            <span style={smallColumn}>
+              <Button
+                onClick={() => onDismiss(page.objectID)}
+                className="button-inline"
+              >
+                Dismiss
+              </Button>
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+}
 Table.propTypes = {
   pages: PropTypes.arrayOf(
     PropTypes.shape({
