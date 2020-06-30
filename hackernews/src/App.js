@@ -71,29 +71,46 @@ class Table extends Component {
   }
 
   render() {
-    const { pages, onDismiss, sortKey, isSortReverse, onSort } = this.props;
+    const { pages, onDismiss } = this.props;
+    const { sortKey, isSortReverse } = this.state;
     let sortedPages = SORTING_FUNCTIONS[sortKey](pages);
     sortedPages = isSortReverse ? sortedPages.reverse() : sortedPages;
     return (
       <div className="table">
         <div className="table-header">
           <span style={largeColumn}>
-            <Sort sortKey={"TITLE"} onSort={onSort} activeSortKey={sortKey}>
+            <Sort
+              sortKey={"TITLE"}
+              onSort={this.onSort}
+              activeSortKey={sortKey}
+            >
               Title
             </Sort>
           </span>
           <span style={midColumn}>
-            <Sort sortKey={"AUTHOR"} onSort={onSort} activeSortKey={sortKey}>
+            <Sort
+              sortKey={"AUTHOR"}
+              onSort={this.onSort}
+              activeSortKey={sortKey}
+            >
               Author
             </Sort>
           </span>
           <span style={smallColumn}>
-            <Sort sortKey={"COMMENTS"} onSort={onSort} activeSortKey={sortKey}>
+            <Sort
+              sortKey={"COMMENTS"}
+              onSort={this.onSort}
+              activeSortKey={sortKey}
+            >
               Comments
             </Sort>
           </span>
           <span style={smallColumn}>
-            <Sort sortKey={"POINTS"} onSort={onSort} activeSortKey={sortKey}>
+            <Sort
+              sortKey={"POINTS"}
+              onSort={this.onSort}
+              activeSortKey={sortKey}
+            >
               Points
             </Sort>
           </span>
@@ -121,6 +138,7 @@ class Table extends Component {
     );
   }
 }
+
 Table.propTypes = {
   pages: PropTypes.arrayOf(
     PropTypes.shape({
@@ -218,16 +236,18 @@ class App extends Component {
 
   setSearchTopStories(result) {
     const { hits, page } = result;
-    const { searchKey, results } = this.state;
-    const oldHits =
-      results && results[searchKey] ? results[searchKey].hits : [];
-    const updatedHits = [...oldHits, ...hits];
-    this.setState({
-      results: {
-        ...results,
-        [searchKey]: { hits: updatedHits, page }
-      },
-      isLoading: false
+    this.setState(prevState => {
+      const { searchKey, results } = prevState;
+      const oldHits =
+        results && results[searchKey] ? results[searchKey].hits : [];
+      const updatedHits = [...oldHits, ...hits];
+      return {
+        results: {
+          ...results,
+          [searchKey]: { hits: updatedHits, page }
+        },
+        isLoading: false
+      };
     });
   }
 
